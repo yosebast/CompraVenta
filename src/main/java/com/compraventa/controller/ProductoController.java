@@ -47,9 +47,18 @@ public class ProductoController {
 	@RequestMapping(value="insertarProd", method= RequestMethod.POST)
 	public String InsertaProductos(@ModelAttribute("producto") @Validated Productos product, BindingResult result, @RequestParam(value = "file", required = true) MultipartFile file, Model model ){		
 		
-		
+			
 		if (result.hasErrors()) {
-			return "Producto/insertaProducto";
+				
+				if(file.getSize() == 0 || file.isEmpty()){			
+					result.rejectValue("urlFoto1", "NotEmpty", "Es obligatorio insertar una imagen");			
+			}				
+				return "Producto/insertaProducto";	
+		}else{			
+			if(file.getSize() == 0 || file.isEmpty()){			
+				result.rejectValue("urlFoto1", "NotEmpty", "Es obligatorio insertar una imagen");				
+				return "Producto/insertaProducto";				
+		   }			
 		}		
 		
 		producto.insertaProducto(product, file);		
