@@ -10,4 +10,8 @@ public interface SeccionManager {
 	
 	public void insertaSeccion(Seccion seccion);
 
+	public List<Seccion> cargaSeccionServicio();
+
+	public Seccion cargaSeccionById(int idseccion);
+
 }

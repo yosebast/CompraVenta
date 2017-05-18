@@ -26,6 +26,20 @@ public class SeccionManagerImpl implements SeccionManager {
 		secDao.insertaSeccionDao(seccion);
 		
 	}
+
+	public List<Seccion> cargaSeccionServicio() {
+		// TODO Auto-generated method stub
+		
+		List<Seccion> listaSeccion = secDao.cargaSeccionServicio();
+		return listaSeccion;
+	}
+
+	public Seccion cargaSeccionById(int idseccion) {
+		// TODO Auto-generated method stub
+		
+		Seccion sec = secDao.cargaSeccionById(idseccion);
+		return sec;
+	}
 	
 	
 

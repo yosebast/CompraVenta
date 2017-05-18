@@ -33,7 +33,7 @@
 <c:forEach items="${listaProductos}"  var="item" >
 
 <tr>
-<td><a href="<spring:url value="ruta?idproducto=${item.idproducto}"/>"><c:out value="${item.idproducto}"></c:out></a></td>
+<td><a href="<spring:url value="rutaProducto?idproducto=${item.idproducto}"/>"><c:out value="${item.idproducto}"></c:out></a></td>
 <td><c:out value="${item.subcategoria.nomsubcategoria}"></c:out></td>
 <td><c:out value="${ item.categoria.nomcategoria }"></c:out></td>
 <td><c:out value="${ item.seccion.nomseccion }"></c:out></td>

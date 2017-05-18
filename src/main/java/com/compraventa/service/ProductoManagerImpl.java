@@ -36,4 +36,16 @@ public class ProductoManagerImpl implements ProductoManager {
 		return listadoProductos;
 	}
 
+
+	public Productos cargaProductoById(int idproducto) {
+		// TODO Auto-generated method stub
+		return productoBBDD.cargaUsuariosServicio(idproducto);
+	}
+
+
+	public void actualizaProducto(Productos product, MultipartFile file) {
+		// TODO Auto-generated method stub
+		productoBBDD.actualizaProducto(product, file);
+	}
+
 }

@@ -50,6 +50,22 @@ public class SeccionDaoImpl implements SeccionDao {
 		
 	}
 
+	public List<Seccion> cargaSeccionServicio() {
+		// TODO Auto-generated method stub
+		
+		Session sesion = HibernateUtil.getSessionFactory().openSession();		
+		
+		return sesion.createQuery("from Seccion").list();
+	}
+
+	public Seccion cargaSeccionById(int idseccion) {
+		// TODO Auto-generated method stub
+		
+		Session sesion = HibernateUtil.getSessionFactory().openSession();
+		
+		return (Seccion) sesion.get(Seccion.class, idseccion);
+	}
+
 
 	
 	

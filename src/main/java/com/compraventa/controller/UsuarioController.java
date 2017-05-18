@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.WebUtils;
 
 import com.compraventa.entidades.Usuarios;
@@ -21,6 +23,8 @@ import com.compraventa.service.UsuarioManager;
 
 @Controller
 public class UsuarioController {
+	
+	protected static Logger logger = Logger.getLogger("UsuarioController");
 
 	@Autowired
 	UsuarioManager personal;
@@ -84,6 +88,7 @@ public class UsuarioController {
 
 	}
 	
+		
 	@RequestMapping(value="ruta", method=RequestMethod.GET)
 	public String upDateUsuario(@RequestParam("idUsuario") Integer idUsuario, Model model){
 		
@@ -137,5 +142,28 @@ public class UsuarioController {
 		return "redirect:/cargaUsuarios";
 		
 	}
+	
+	
+	
+	//con los siguientes metodos recuperamos objetos y listados de objetos
+	
+	@RequestMapping(value="/usuarios", method=RequestMethod.GET, headers = "Accept=application/xml, application/json")
+	public @ResponseBody List<Usuarios> getAllUsuarios(){
+		
+		logger.debug("provider has received request to get all persons");
+		
+		List<Usuarios> listadoUsuarios = personal.cargaUsuariosServicio();
+		
+		return listadoUsuarios;
+		
+		
+	}
+
+	
+	
 
 }
+
+
+
+

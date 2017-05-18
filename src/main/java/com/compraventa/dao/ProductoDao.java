@@ -13,5 +13,9 @@ public interface ProductoDao {
 
 public List<Productos> cargaProductosDao();
 
+public Productos cargaUsuariosServicio(int idproducto);
+
+public void actualizaProducto(Productos product, MultipartFile file);
+
 	
 }
