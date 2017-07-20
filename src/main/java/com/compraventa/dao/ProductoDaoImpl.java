@@ -17,6 +17,10 @@ import com.compraventa.util.HibernateUtil;
 
 @Repository
 public class ProductoDaoImpl implements ProductoDao {
+	
+	/*
+	 * todo este codigo es repetitivo y esta mal esto se desarrolla a traves de las interfaces y generics   de spring
+	 */
 
 	public void InsertaProducto(Productos producto, MultipartFile file){
 		// TODO Auto-generated method stub
