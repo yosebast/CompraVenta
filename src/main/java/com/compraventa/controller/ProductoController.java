@@ -286,7 +286,7 @@ protected static Logger logger = Logger.getLogger("ProductoController");
 		
 		List<ResponseEntity<byte[]>> listadoImagenes = new ArrayList<ResponseEntity<byte[]>>();	
 		
-		byte[] content1 = IOUtils.toByteArray(new FileInputStream(new File("C:\\estrellas.jpg")));
+	/*	byte[] content1 = IOUtils.toByteArray(new FileInputStream(new File("C:\\estrellas.jpg")));
 		
 		byte[] content2 = IOUtils.toByteArray(new FileInputStream(new File("C:\\nebulosa.jpg")));
 		
@@ -310,12 +310,35 @@ protected static Logger logger = Logger.getLogger("ProductoController");
 		headers3.setContentType(MediaType.IMAGE_JPEG);
 		String filename3 = "test3.jpg";
 		headers3.setContentDispositionFormData(filename3, filename3);
-		ResponseEntity<byte[]> response3 = new ResponseEntity<byte[]>(content3, headers3, HttpStatus.OK);     		
+		ResponseEntity<byte[]> response3 = new ResponseEntity<byte[]>(content3, headers3, HttpStatus.OK);   
+		
 		 
 		listadoImagenes.add(response1);
 		listadoImagenes.add(response2);
-		listadoImagenes.add(response3);		
-       
+		listadoImagenes.add(response3);	*/
+
+		
+		List<Productos> listProductos = producto.cargaProductosServicio();
+		
+		String filename = "";
+		byte[] contents = null;
+		InputStream blobInputStream = null;
+		Blob blob = null;
+		ResponseEntity<byte[]> response = null;
+		HttpHeaders headers = null;
+		
+		for(Productos product : listProductos){			
+			blob = product.getUrlFoto1();
+			blobInputStream = blob.getBinaryStream();
+			contents = IOUtils.toByteArray(blobInputStream);
+			headers = new HttpHeaders();
+			headers.setContentType(MediaType.IMAGE_JPEG);
+			filename = product.getNomImagen();			
+			headers.setContentDispositionFormData(filename, filename);
+			response = new ResponseEntity<byte[]>(contents, headers, HttpStatus.OK);			
+			listadoImagenes.add(response);
+		}
+				
 		  return listadoImagenes;      
 		
 		
