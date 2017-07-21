@@ -24,6 +24,7 @@ public class UsuarioDaoImpl implements UsuarioDao {
 		//sesion.save(user);
 		
 		//segunda forma mas compacta y robusta   se obtiene el id    pero faltaria que el metodi sea de devolver un tipo de dato Integer
+		@SuppressWarnings("unused")
 		int id = 0;
         try {
            
@@ -54,6 +55,7 @@ public class UsuarioDaoImpl implements UsuarioDao {
 	}
 
 	
+	@SuppressWarnings("unchecked")
 	public List<Usuarios> cargaUsuariosDao() {
 		// TODO Auto-generated method stub
 		

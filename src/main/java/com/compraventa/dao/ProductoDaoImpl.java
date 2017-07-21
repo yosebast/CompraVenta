@@ -38,6 +38,7 @@ public class ProductoDaoImpl implements ProductoDao {
 		sesion.save(producto);	
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Productos> cargaProductosDao() {
 		// TODO Auto-generated method stub		
 		

@@ -24,6 +24,7 @@ public class SubCategoriaDaoImpl implements SubCategoriaDao {
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	public List<Subcategoria> listaSubCategoriaDao(){
 		
 		List<Subcategoria> listaCategorias = null;		

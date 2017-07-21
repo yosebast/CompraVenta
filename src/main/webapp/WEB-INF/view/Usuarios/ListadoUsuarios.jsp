@@ -16,7 +16,7 @@
 
 <table>
 
-<tr><td><c:out value="id"/></td><td><c:out value="NOMBRE"/></td><td><c:out value="APELLIDOS"/></td><td></td></td></tr>
+<tr><td><c:out value="id"/></td><td><c:out value="NOMBRE"/></td><td><c:out value="APELLIDOS"/></td><td></td></tr>
 
 <c:forEach items="${listaUsuarios}"  var="item" >
 

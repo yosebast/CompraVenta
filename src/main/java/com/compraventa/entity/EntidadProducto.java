@@ -3,7 +3,7 @@ package com.compraventa.entity;
 
 import java.util.Date;
 
-import org.springframework.stereotype.Component;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import com.compraventa.entidades.Categoria;

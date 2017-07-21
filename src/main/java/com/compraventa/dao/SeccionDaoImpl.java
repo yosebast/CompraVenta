@@ -14,6 +14,7 @@ public class SeccionDaoImpl implements SeccionDao {
 
 	
 
+	@SuppressWarnings("unchecked")
 	public List<Seccion> listaSeccion() {
 		// TODO Auto-generated method stub
 		
@@ -36,6 +37,7 @@ public class SeccionDaoImpl implements SeccionDao {
 		Session sesion = HibernateUtil.getSessionFactory().openSession();
 		
 		
+		@SuppressWarnings("unused")
 		int id = 0;
 		
 		try {
@@ -50,6 +52,7 @@ public class SeccionDaoImpl implements SeccionDao {
 		
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Seccion> cargaSeccionServicio() {
 		// TODO Auto-generated method stub
 		

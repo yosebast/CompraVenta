@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.WebUtils;
 
-import com.compraventa.entidades.Productos;
+
 import com.compraventa.entidades.Seccion;
 import com.compraventa.service.SeccionManager;
 

@@ -29,6 +29,7 @@ public class Test {
 		
 		try {
 			prop.load(input);
+			@SuppressWarnings("rawtypes")
 			Enumeration enu =    prop.keys();
 			
 			while(enu.hasMoreElements()){

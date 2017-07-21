@@ -24,6 +24,7 @@ public class CategoriaDaoImpl implements CategoriaDao {
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<Categoria> listaCategorias(){
 		
 		List<Categoria> listacategorias = null;
