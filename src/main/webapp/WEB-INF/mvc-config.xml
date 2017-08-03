@@ -12,7 +12,8 @@
 
     <mvc:annotation-driven />
      <mvc:resources mapping="/commom" location="/commom" />
-    <mvc:resources mapping="/InternalResources/**" location="/InternalResources" />
+     <!-- aqui le he agregado una barra /  al final de  InternalResources  para que funcione-->
+    <mvc:resources mapping="/InternalResources/**" location="/InternalResources/" />
 
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 	        <!-- Example: a logical view name of 'showMessage' is mapped to '/WEB-INF/jsp/showMessage.jsp' -->

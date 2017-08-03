@@ -16,4 +16,6 @@ public interface UsuarioManager {
 	public void updateUsuario(Usuarios usuario, int idusu);
 	
 	public void deleteUsuario(Integer idUsuario);
+
+	public boolean isNotUserClaveUnique(String clave);
 }

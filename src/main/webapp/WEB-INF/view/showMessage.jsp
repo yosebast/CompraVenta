@@ -12,7 +12,7 @@
 
 		
 	
-	<form:form action="addUsuario" method="post" modelAttribute="usuario">
+	<form:form  method="post" modelAttribute="usuario">
 	
 		<table>
 		
@@ -88,8 +88,20 @@
 			</tr>
 			
 			<tr>
-				<td colspan="3"><form:button name="insertar">Insertar</form:button>
-					<form:button name="cancelar">Cancelar</form:button></td>
+			
+			<c:choose>
+			
+			<c:when test="${edit}">			
+			<td colspan="3"><input type="submit" value="ruta"/> or <a href="<c:url value='/list' />">Cancel</a>
+			</c:when>
+			<c:otherwise>			
+			<td colspan="3"><input type="submit" value="insertar">or <a href="<c:url value='/list' />">Cancel</a>
+			</c:otherwise>		
+			</c:choose>
+			
+			
+				<!-- <td colspan="3"><form:button name="insertar">Insertar</form:button>
+					<form:button name="cancelar">Cancelar</form:button></td>-->
 			</tr>
 			
 			

@@ -30,28 +30,37 @@ public class UsuarioManagerImpl implements UsuarioManager {
 		return UsuarioPersisten.cargaUsuariosDao();		
 	}
 
-
 	public Usuarios getById(Integer id){	
 		
 		return UsuarioPersisten.getById( id );	
 		
-	}
-
-	
+	}	
 	
 	public void updateUsuario(Usuarios usuario, int idusu) {
 		// TODO Auto-generated method stub
 		
 		 UsuarioPersisten.updateUsuarioDao(usuario, idusu);
 		
+	}	
+	
+	public void deleteUsuario(Integer idusuario){		
+		// TODO Auto-generated method stub
+		
+		UsuarioPersisten.deleteUsuarioDao(idusuario);
+		
 	}
-	
-	
-	public void deleteUsuario(Integer idUsuario){
+
+	public boolean isNotUserClaveUnique(String clave) {
+		// TODO Auto-generated method stub
+	boolean respuesta = false;
 		
-		
-		UsuarioPersisten.deleteUsuarioDao(idUsuario);
-		
+		List<Usuarios> user = UsuarioPersisten.cargaUsuariosDao();		
+		for (Usuarios usuarios : user) {			
+			if( clave.equals(usuarios.getClave())){			
+				respuesta = true;
+			}				
+		}	
+		return respuesta;
 	}
 
 }

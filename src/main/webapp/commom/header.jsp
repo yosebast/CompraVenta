@@ -10,6 +10,10 @@
  
 
 <link href="<spring:url value="/InternalResources/css/maqueta.css"/>" type="text/css" rel="stylesheet" />
+<link href="<spring:url value="/InternalResources/css/tablas.css"/>" type="text/css" rel="stylesheet" />
+<link href="<spring:url value="/InternalResources/css/bootstrap.css"/>" type="text/css" rel="stylesheet" />
+
+
 <script type="text/javascript" src="<spring:url value ="/InternalResources/js/Funciones.js"/>"></script>
  
 

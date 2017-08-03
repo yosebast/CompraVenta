@@ -7,7 +7,7 @@
 </head>
 <body>
 
-	<form:form action="upDateUsuario" method="post"
+	<form:form  method="post"
 		modelAttribute="usuario">
 
 
@@ -93,7 +93,23 @@
 
 
 			<tr>
-				<td colspan="3"><form:button name="actualizar"><c:out value="Actualizar"></c:out></form:button> <form:button name="cancelar"><c:out value="Cancelar"></c:out></form:button></td>
+			
+			<c:choose>
+			<c:when test="${edit}">
+			
+			<!-- <td colspan="3"><form:button name="actualizar"><c:out value="Actualizar"></c:out></form:button> <form:button name="cancelar"><c:out value="Cancelar"></c:out></form:button></td>-->
+			<td colspan="3"><input type="submit" value="Update"> or <a href="<c:url value='/list' />"><c:out value="Cancelar"/></a></td>
+			</c:when>
+			
+			<c:otherwise>
+			
+			<!-- <td colspan="3"><form:button name="insertar"><c:out value="Insertar"></c:out></form:button> <form:button name="cancelar"><c:out value="Cancelar"></c:out></form:button></td>-->
+			<td colspan="3"><input type="submit" value="Register" /> or  <a href="<c:url value='/list'/>"><c:out value="Cancelar"/></a>
+			</c:otherwise>
+			
+			</c:choose>
+			
+			
 			</tr>
 
 		</table>

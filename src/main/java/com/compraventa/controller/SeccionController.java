@@ -3,6 +3,7 @@ package com.compraventa.controller;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,12 +37,85 @@ public class SeccionController {
 	@RequestMapping(value="cargaSeccion", method = RequestMethod.GET)
 	public String cargaFormInsertaSeccion(Model model){
 		
-		model.addAttribute("seccion", new Seccion());
-		
-		
+		model.addAttribute("seccion", new Seccion());		
 		return "Seccion/insertaSeccion";
 	}
+	
+	
+// 1.-la carga del listado
+	
+	@RequestMapping(value="/listSection", method=RequestMethod.GET)
+	public String listadoSection(Model model){
 		
+		List<Seccion> listado = secman.listaSeccion();		
+		model.addAttribute("listSection", listado);
+		
+		return "Seccion/ListadoSeccion";
+		
+	}
+	
+	//2.-agregar una seccion
+	@RequestMapping(value="/addSeccion", method=RequestMethod.GET)
+	public String NewSeccion(Model model){
+		
+		model.addAttribute("seccion", new Seccion());
+		model.addAttribute("edit", false);
+		
+		return "Seccion/actualizaSeccion";		
+	}	
+	
+	//3.+-insertar una seccion
+	@RequestMapping(value="/addSeccion", method=RequestMethod.POST)
+	public String addSeccion(@ModelAttribute("seccion") @Valid Seccion seccion, BindingResult result, Model modelo){
+		
+		if(result.hasErrors()){			
+			return  "Seccion/actualizaSeccion";			
+		}		
+		
+		secman.insertaSeccion(seccion);
+		//regresa al listado de secciones
+		return "redirect:/listSection";
+	}
+	
+	//4.- delete seccion
+	
+	@RequestMapping(value="/delete-section-{idseccion}", method=RequestMethod.GET)
+	public String deleteSeccion(@PathVariable("idseccion") Integer idseccion){
+		
+		secman.borrarSeccion(idseccion);
+		
+		return "redirect:/listSection";
+	}
+	
+	
+	//5.- ir a la pagina de actualizar
+	
+	@RequestMapping(value="/edit-section-{idseccion}", method=RequestMethod.GET)
+	public String irPagActualizaSecion(@PathVariable("idseccion") Integer idseccion,  Model model){
+		
+		Seccion seccion = secman.cargaSeccionById(idseccion);
+		
+		model.addAttribute("seccion", seccion);
+		model.addAttribute("edit", true);
+		
+		return "Seccion/actualizaSeccion";
+	}
+	
+	
+	
+	//6.- actualizar seccion
+	
+	@RequestMapping(value="/edit-section-{idseccion}", method=RequestMethod.POST)	
+	public String actualizaSeccion(@ModelAttribute("seccion") @Valid Seccion seccion, BindingResult result, @PathVariable("idseccion") Integer idseccion){			
+		
+		secman.actualizaSeccion(idseccion, seccion);		
+		
+		return "redirect:listSection";
+	}
+	
+	
+	/*<input type="button" id="seccion" name="seccion" value="seccion"  onclick="location.href='<c:url value="cargaSeccion"/>'"/> 
+	 * si vienes de un boton va directmente insertSeccion   sin la barra /
 	@RequestMapping(value="insertSeccion", method = RequestMethod.POST)
 	public String insertaSeccion(@ModelAttribute("seccion") @Validated Seccion seccion, BindingResult result, Model model){
 		
@@ -66,7 +140,7 @@ public class SeccionController {
 			return "redirect:/cargaUsuarios";	
 		}
 		
-	}
+	}*/
 	
 	
 	//con los siguientes metodos recuperamos objetos y listados de objetos

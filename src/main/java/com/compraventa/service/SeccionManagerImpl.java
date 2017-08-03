@@ -40,6 +40,16 @@ public class SeccionManagerImpl implements SeccionManager {
 		Seccion sec = secDao.cargaSeccionById(idseccion);
 		return sec;
 	}
+
+	public void borrarSeccion(Integer idseccion) {
+		// TODO Auto-generated method stub
+		secDao.borrarSeccion(idseccion);
+	}
+
+	public void actualizaSeccion(Integer idseccion, Seccion seccion) {
+		// TODO Auto-generated method stub
+		secDao.actualizaSeccion(idseccion, seccion);
+	}
 	
 	
 

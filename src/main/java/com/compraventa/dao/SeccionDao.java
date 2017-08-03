@@ -13,4 +13,8 @@ public interface SeccionDao {
 	public List<Seccion> cargaSeccionServicio();
 
 	public Seccion cargaSeccionById(int idseccion);
+
+	public void borrarSeccion(Integer idseccion);
+
+	public void actualizaSeccion(Integer idseccion, Seccion seccion);
 }
