@@ -8,6 +8,10 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,9 +19,11 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.compraventa.entidades.Productos;
 import com.compraventa.entidades.Usuarios;
@@ -146,19 +152,119 @@ public class UsuarioController {
 		}
 		
 		
-		//con los siguientes metodos recuperamos objetos y listados de objetos
+		//con los siguientes metodos hacemos el crud para las llamadas   desde el proyecto angular externo por lo que seria mejor devolver la llamada a traves de un 
+		//ResponseEntityque va a empaquetar la respuesta
 		
 		@RequestMapping(value="/usuarios", method=RequestMethod.GET)
 		public @ResponseBody List<Usuarios> getAllUsuarios(){
 			
-			logger.debug("provider has received request to get all persons");
+			logger.debug("provider has received request to get all persons");			
+			List<Usuarios> listadoUsuarios = personal.cargaUsuariosServicio();			
+			return listadoUsuarios;			
+		}
+		
+		/*  el metodo anterios tambien se puede hacer con ResponseEntity   y seri alo correcto
+	
+ 			@RequestMapping(value = "/user/", method = RequestMethod.GET)
+    		public ResponseEntity<List<User>> listAllUsers() {
+        	List<User> users = userService.findAllUsers();
+        	if(users.isEmpty()){
+            return new ResponseEntity<List<User>>(HttpStatus.NO_CONTENT);//You many decide to return HttpStatus.NOT_FOUND
+        	}
+        	return new ResponseEntity<List<User>>(users, HttpStatus.OK);
+    }
+				
+		 */		
+		
+		
+		// metodo para obtener un registro
+		@RequestMapping(value="/usuarios-{idusuario}", method=RequestMethod.GET, headers="Accept=application/xml, application/json, text/plain", produces = MediaType.APPLICATION_JSON_VALUE)
+		public ResponseEntity<Usuarios> getUserById(@PathVariable("idusuario") Integer idusuario){		
 			
-			List<Usuarios> listadoUsuarios = personal.cargaUsuariosServicio();
 			
-			return listadoUsuarios;
+			System.out.println("Fetching User with id " + idusuario);
+			Usuarios user = personal.getById(idusuario);
+			if(user== null){
+				System.out.println("User with id " + idusuario + "not found");
+				
+				return new ResponseEntity<Usuarios>(HttpStatus.NOT_FOUND);
+			}
+			HttpHeaders headers = new HttpHeaders();				
+			return new ResponseEntity<Usuarios>(user, headers, HttpStatus.OK);
+			
+		}
+		
+		
+		//metodo para actualizar un registro
+		
+		@RequestMapping(value="/usuarios-{id}", method=RequestMethod.PUT, headers="Accept=application/xml, application/json, text/plain", produces=MediaType.APPLICATION_JSON_VALUE)
+		public ResponseEntity<Void> upDateUser(@PathVariable("id") Integer idusuario, @RequestBody Usuarios user){
+			
+			System.out.println("Updating User " + idusuario);
+			
+			Usuarios currentUser = personal.getById(idusuario);
+			
+			if(currentUser == null){
+				System.out.println("User with id "+ idusuario +" not found");
+				return  new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+			}			
+			
+			personal.updateUsuario(user, idusuario);
+			
+			HttpHeaders header= new HttpHeaders();			
+			
+			return new ResponseEntity<Void>(header, HttpStatus.OK);
+		}
+		
+		
+		//metodo para eliminar un registro
+		
+		@RequestMapping(value="/usuarios-{id}", method=RequestMethod.DELETE, headers = "Accept=application/xml, application/json, text/plain", produces=MediaType.APPLICATION_JSON_VALUE)
+		public ResponseEntity<Void> deleteUser(@PathVariable("id") Integer idusuario){
+			
+			System.out.println("Fetching & Deleting User with id " + idusuario);
+			
+			Usuarios user = personal.getById(idusuario);
+			
+			if( user == null ){
+				System.out.println("Unable to delete. User with id " + idusuario + " not found");
+				return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+				
+			}
 			
 			
-		}	
+			personal.deleteUsuario(idusuario);			
+			HttpHeaders header = new HttpHeaders();			
+			return new ResponseEntity<Void>(header, HttpStatus.NO_CONTENT);
+			
+		}
+		
+		
+		@RequestMapping(value="/user", method=RequestMethod.POST, headers="Accept=application/xml, application/json", produces = "application/json")
+		public ResponseEntity<Void> createUser(@RequestBody Usuarios user, UriComponentsBuilder ucBuilder){
+			
+			System.out.println("Creating User " + user.getNombre());
+			
+			if (personal.isNotUserClaveUnique(user.getClave())) {
+				
+				System.out.println("A User with name " + user.getNombre() + "already exist");
+				return new ResponseEntity<Void>(HttpStatus.CONFLICT);
+			}
+			
+			personal.insertUsuario(user);
+			
+			HttpHeaders headers = new HttpHeaders();
+			headers.setLocation(ucBuilder.path("/user/{id}").buildAndExpand(user.getIdusuario()).toUri());
+			
+			return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
+		}
+
+	
+		
+		
+		
+		
+		
 		
 		
 
