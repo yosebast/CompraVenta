@@ -7,10 +7,11 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
     <!-- Uncomment and your base-package here:-->
-         <context:component-scan base-package="com.compraventa"/>  
-
-
+    
+    <context:component-scan base-package="com.compraventa"/> 
     <mvc:annotation-driven />
+    
+    
      <mvc:resources mapping="/commom" location="/commom" />
      <!-- aqui le he agregado una barra /  al final de  InternalResources  para que funcione-->
     <mvc:resources mapping="/InternalResources/**" location="/InternalResources/" />
@@ -21,33 +22,5 @@
 	        <property name="suffix" value=".jsp"/>
 	</bean>
 	
-	 <bean id="messageSource"
-        class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
-        <property name="basename" value="classpath:messages" />
-        <property name="defaultEncoding" value="UTF-8" />
-    </bean>
-
-<bean id="localeChangeInterceptor"
-    class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
-    <property name="paramName" value="lang" />
-</bean>
- 
-<bean id="localeResolver"
-    class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
-    <property name="defaultLocale" value="en"/>
-</bean>
- 
-<bean id="handlerMapping"
-    class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
-    <property name="interceptors">
-        <ref bean="localeChangeInterceptor" />
-    </property>
-</bean>
-
-<bean id="multipartResolver"
-		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-
-		<!-- one of the properties available; the maximum file size in bytes -->
-		<property name="maxUploadSize" value="10000000" />
-	</bean>
+	
 </beans>
