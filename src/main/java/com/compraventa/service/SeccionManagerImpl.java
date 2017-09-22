@@ -1,6 +1,5 @@
 package com.compraventa.service;
 
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,12 +8,16 @@ import com.compraventa.dao.SeccionDao;
 import com.compraventa.entidades.Seccion;
 
 
-@Service
-public class SeccionManagerImpl implements SeccionManager {
 
-	@Autowired	
-	SeccionDao secDao;
 	
+	@Service
+	public class SeccionManagerImpl extends GenericServiceImpl<Seccion, Integer> implements SeccionManager {
+
+			@Autowired
+			SeccionDao SeccionPersisten;	
+	
+
+	/*
 	public List<Seccion> listaSeccion() {
 		// TODO Auto-generated method stub
 		return secDao.listaSeccion();
@@ -50,7 +53,7 @@ public class SeccionManagerImpl implements SeccionManager {
 		// TODO Auto-generated method stub
 		secDao.actualizaSeccion(idseccion, seccion);
 	}
-	
+	*/
 	
 
 }

@@ -47,7 +47,7 @@ public class UsuarioController {
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public String muestraEntrada(Model model) {
 
-		List<Usuarios> listaUsus = personal.cargaUsuariosServicio();
+		List<Usuarios> listaUsus = personal.getAll();
 		model.addAttribute("listaUsuarios", listaUsus);	
 		return "Usuarios/ListadoUsuarios";
 	}
@@ -79,7 +79,7 @@ public class UsuarioController {
 			return "Usuarios/actualizaUsuarios";
 		}
 
-			personal.insertUsuario(usuario);				
+			personal.persist(usuario);
 			return "redirect:/list";
 		
 	}	
@@ -87,7 +87,7 @@ public class UsuarioController {
 	@RequestMapping(value="/edit-user-{idusuario}", method=RequestMethod.GET)
 	public String upDateUsuario(@PathVariable("idusuario") Integer idusuario, Model model){		
 		
-		Usuarios usu = personal.getById(idusuario);			
+		Usuarios usu = personal.get(idusuario);			
 		model.addAttribute("usuario", usu);		
 		model.addAttribute("edit", true);
 		return "Usuarios/actualizaUsuarios";
@@ -101,7 +101,7 @@ public class UsuarioController {
 			return "Usuarios/actualizaUsuarios";
 		}
 		
-		personal.updateUsuario(usua, idusuario);
+		personal.update(usua);
 		
 		return "redirect:/list";		
 				
@@ -114,7 +114,8 @@ public class UsuarioController {
 	@RequestMapping(value="/delete-user-{idusuario}", method = RequestMethod.GET)
 	public String borrar(@PathVariable("idusuario") Integer idusuario){		
 		
-		personal.deleteUsuario(idusuario);				
+		Usuarios usu = personal.get(idusuario);
+		personal.remove(usu);			
 		return "redirect:/list";
 		
 	}	
@@ -126,7 +127,7 @@ public class UsuarioController {
 		@RequestMapping(value = "/cargaUsuarios", method = RequestMethod.GET)
 		public String loadUsuarios(Model model) {
 
-			List<Usuarios> listaUsus = personal.cargaUsuariosServicio();
+			List<Usuarios> listaUsus = personal.getAll();
 
 			model.addAttribute("listaUsuarios", listaUsus);
 
@@ -159,7 +160,7 @@ public class UsuarioController {
 		public @ResponseBody List<Usuarios> getAllUsuarios(){
 			
 			logger.debug("provider has received request to get all persons");			
-			List<Usuarios> listadoUsuarios = personal.cargaUsuariosServicio();			
+			List<Usuarios> listadoUsuarios = personal.getAll();			
 			return listadoUsuarios;			
 		}
 		
@@ -183,7 +184,7 @@ public class UsuarioController {
 			
 			
 			System.out.println("Fetching User with id " + idusuario);
-			Usuarios user = personal.getById(idusuario);
+			Usuarios user = personal.get(idusuario);
 			if(user== null){
 				System.out.println("User with id " + idusuario + "not found");
 				
@@ -202,14 +203,14 @@ public class UsuarioController {
 			
 			System.out.println("Updating User " + idusuario);
 			
-			Usuarios currentUser = personal.getById(idusuario);
+			Usuarios currentUser = personal.get(idusuario);
 			
 			if(currentUser == null){
 				System.out.println("User with id "+ idusuario +" not found");
 				return  new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
 			}			
 			
-			personal.updateUsuario(user, idusuario);
+			personal.update(user);
 			
 			HttpHeaders header= new HttpHeaders();			
 			
@@ -224,7 +225,7 @@ public class UsuarioController {
 			
 			System.out.println("Fetching & Deleting User with id " + idusuario);
 			
-			Usuarios user = personal.getById(idusuario);
+			Usuarios user = personal.get(idusuario);
 			
 			if( user == null ){
 				System.out.println("Unable to delete. User with id " + idusuario + " not found");
@@ -232,8 +233,8 @@ public class UsuarioController {
 				
 			}
 			
-			
-			personal.deleteUsuario(idusuario);			
+			Usuarios usu = personal.get(idusuario);
+			personal.remove(usu);			
 			HttpHeaders header = new HttpHeaders();			
 			return new ResponseEntity<Void>(header, HttpStatus.NO_CONTENT);
 			
@@ -251,7 +252,7 @@ public class UsuarioController {
 				return new ResponseEntity<Void>(HttpStatus.CONFLICT);
 			}
 			
-			personal.insertUsuario(user);
+			personal.persist(user);
 			
 			HttpHeaders headers = new HttpHeaders();
 			headers.setLocation(ucBuilder.path("/user/{id}").buildAndExpand(user.getIdusuario()).toUri());

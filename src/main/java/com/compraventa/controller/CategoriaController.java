@@ -36,7 +36,7 @@ public class CategoriaController {
 	@RequestMapping(value="insertaCateg", method=RequestMethod.POST)
 	public String insertaCategoria(@ModelAttribute("categoria") @Validated Categoria categoria, BindingResult result, Model model){
 		
-		categoriaMan.insertarCategory(categoria);		
+		categoriaMan.persist(categoria);	
 		return "Categoria/insertaCategoria";
 	}
 	

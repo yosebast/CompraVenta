@@ -1,72 +1,40 @@
 package com.compraventa.dao;
 
+
 import java.io.IOException;
 import java.sql.Blob;
-import java.util.List;
 
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
-import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.compraventa.entidades.Productos;
 
-import com.compraventa.util.HibernateUtil;
 
-
-@Repository
-public class ProductoDaoImpl implements ProductoDao {
 	
-	/*
-	 * todo este codigo es repetitivo y esta mal esto se desarrolla a traves de las interfaces y generics   de spring
-	 */
-
-	public void InsertaProducto(Productos producto, MultipartFile file){
-		// TODO Auto-generated method stub
+	@Repository
+	public class ProductoDaoImpl extends GenericDaoImpl<Productos, Integer> implements ProductoDao {	
 		
-		Session sesion = HibernateUtil.getSessionFactory().openSession();
-		
-		try {
-			Blob image = Hibernate.getLobCreator(sesion).createBlob(file.getInputStream(), file.getSize());
-			producto.setUrlFoto1(image);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		public void InsertaProducto(Productos producto, MultipartFile file){
+			// TODO Auto-generated method stub		
+			
+			try {
+				Blob image = Hibernate.getLobCreator(currentSession()).createBlob(file.getInputStream(), file.getSize());
+				producto.setUrlFoto1(image);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			currentSession().persist(producto);
 		}
 		
-		sesion.save(producto);	
-	}
-
-	@SuppressWarnings("unchecked")
-	public List<Productos> cargaProductosDao() {
-		// TODO Auto-generated method stub		
-		
-		
-		List<Productos>  listadoProductos = null;
-		
-		Session sesion = HibernateUtil.getSessionFactory().openSession();	
-		
-		 listadoProductos = sesion.createQuery("from Productos").list();
-		 
-		 return listadoProductos;
-	}
-
-	public Productos cargaUsuariosServicio(int idproducto) {
-		// TODO Auto-generated method stub
-		
-		Session sesion = HibernateUtil.getSessionFactory().openSession();
-		
-		Productos product = (Productos) sesion.get(Productos.class, idproducto);
-		
-		return product;
-	}
 
 	public void actualizaProducto(Productos product, MultipartFile file) {
 		// TODO Auto-generated method stub
-		Session sesion = HibernateUtil.getSessionFactory().openSession();		
-		
-		Query query = sesion.createQuery("update Productos set seccion = :seccion," +" categoria = :categoria," + " subcategoria = :subcategoria," + " titulo = :titulo," + " precio = :precio,"
+	
+	        Query query = currentSession().createQuery("update Productos set seccion = :seccion," +" categoria = :categoria," + " subcategoria = :subcategoria," + " titulo = :titulo," + " precio = :precio,"
 				+ " fechaPublicacion = :fechaPublicacion," + " estado = :estado," + " visitas = :visitas," + " nomImagen = :nomImagen," + " urlFoto1 = :urlFoto1" +
 	    				" where idproducto = :idproducto");
 		query.setParameter("seccion", product.getSeccion());
@@ -83,7 +51,7 @@ public class ProductoDaoImpl implements ProductoDao {
 		if(file.getSize() != 0 || !file.isEmpty()){			
 			Blob image = null;
 			try {
-				image = Hibernate.getLobCreator(sesion).createBlob(file.getInputStream(), file.getSize());
+				image = Hibernate.getLobCreator(currentSession()).createBlob(file.getInputStream(), file.getSize());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -103,10 +71,6 @@ public class ProductoDaoImpl implements ProductoDao {
 		
 	}
 
-	
-	
-	
-	
-	
+		
 	
 }

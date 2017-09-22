@@ -91,7 +91,7 @@ protected static Logger logger = Logger.getLogger("ProductoController");
 				return "Producto/insertaProducto";				
 		   }			
 		}		
-		
+	
 		producto.insertaProducto(product, file);		
 		return "Producto/insertaProducto";		
 	}
@@ -107,7 +107,7 @@ protected static Logger logger = Logger.getLogger("ProductoController");
 	@RequestMapping(value = "cargaProductos", method = RequestMethod.GET)
 	public String loadProductos(Model model) {
 
-		List<Productos> listaProduct = producto.cargaProductosServicio();
+		List<Productos> listaProduct = producto.getAll();
 
 		model.addAttribute("listaProductos", listaProduct);
 
@@ -136,7 +136,7 @@ protected static Logger logger = Logger.getLogger("ProductoController");
 		Productos product = null; 
 		
 		if( idproducto != null ){			
-			product = producto.cargaProductoById(idproducto);					
+			product = producto.get(idproducto);					
 		}
 		
 		if(  product != null ){
@@ -172,7 +172,7 @@ protected static Logger logger = Logger.getLogger("ProductoController");
 		
 		if(file.getSize() == 0 || file.isEmpty()){		
 
-			Productos prod = producto.cargaProductoById(product.getIdproducto());
+			Productos prod = producto.get(product.getIdproducto());
 			
 			product.setUrlFoto1(prod.getUrlFoto1());
 			
@@ -191,19 +191,19 @@ protected static Logger logger = Logger.getLogger("ProductoController");
 	
 	@ModelAttribute("listaCategorias")
 	public List<Categoria> listaCategorias(){		
-		return cateman.listaCategorias();		
+		return cateman.getAll();		
 	}
 		
 	
 	@ModelAttribute("listaSubcategoria")
 	public List<Subcategoria> listaSubcategoria(){		
-		return subcat.listaSubCategoriaManag();		
+		return subcat.getAll();		
 	}
 	
 	
 	@ModelAttribute("listaSeccion")
 	public List<Seccion> listaSeccion(){		
-		return secman.listaSeccion();
+		return secman.getAll();
 		
 		
 	}
@@ -215,7 +215,7 @@ protected static Logger logger = Logger.getLogger("ProductoController");
 		
 		logger.debug("Provider has received request to get all products");
 		
-		List<Productos> listaProductos = producto.cargaProductosServicio();		
+		List<Productos> listaProductos = producto.getAll();		
 		
 		return listaProductos;
 		
@@ -251,7 +251,7 @@ protected static Logger logger = Logger.getLogger("ProductoController");
 		
 		logger.debug("provider has received request to get one products");
 		
-		Productos product = producto.cargaProductoById(idproducto);
+		Productos product = producto.get(idproducto);
 		
 		Blob blob = product.getUrlFoto1();
 		InputStream blobInputStream = blob.getBinaryStream();
@@ -318,7 +318,7 @@ protected static Logger logger = Logger.getLogger("ProductoController");
 		listadoImagenes.add(response3);	*/
 
 		
-		List<Productos> listProductos = producto.cargaProductosServicio();
+		List<Productos> listProductos = producto.getAll();
 		
 		String filename = "";
 		byte[] contents = null;

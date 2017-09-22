@@ -1,20 +1,19 @@
 package com.compraventa.service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.compraventa.dao.CategoriaDao;
 import com.compraventa.entidades.Categoria;
 
-@Service
-public class CategoriaMangerImpl implements CategoriaManger {
 
+@Service
+public class CategoriaMangerImpl extends GenericServiceImpl<Categoria, Integer> implements CategoriaManger {
+
+			@Autowired
+			CategoriaDao CategoriaPersisten;	
 	
-	@Autowired
-	CategoriaDao categorya;
-	
+
+	/*
 	
 	
 	
@@ -30,7 +29,7 @@ public class CategoriaMangerImpl implements CategoriaManger {
 		
 		return categorya.listaCategorias();
 		
-	}
+	}*/
 }
 
 

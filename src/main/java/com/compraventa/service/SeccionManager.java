@@ -1,12 +1,11 @@
 package com.compraventa.service;
 
-import java.util.List;
-
 import com.compraventa.entidades.Seccion;
 
-public interface SeccionManager {
+
+	public interface SeccionManager extends GenericService<Seccion, Integer> {
 	
-	public List<Seccion> listaSeccion();
+	/*public List<Seccion> listaSeccion();
 	
 	public void insertaSeccion(Seccion seccion);
 
@@ -16,6 +15,6 @@ public interface SeccionManager {
 	
 	public void borrarSeccion(Integer idseccion);
 
-	public void actualizaSeccion(Integer idseccion, Seccion seccion);
+	public void actualizaSeccion(Integer idseccion, Seccion seccion);*/
 
 }

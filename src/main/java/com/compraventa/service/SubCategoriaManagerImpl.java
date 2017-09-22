@@ -1,6 +1,5 @@
 package com.compraventa.service;
 
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,17 +8,16 @@ import com.compraventa.dao.SubCategoriaDao;
 import com.compraventa.entidades.Subcategoria;
 
 
-@Service
-public class SubCategoriaManagerImpl implements SubCategoriaManager {
+	
+	@Service
+	public class SubCategoriaManagerImpl extends GenericServiceImpl<Subcategoria, Integer> implements SubCategoriaManager {
 
+			@Autowired
+			SubCategoriaDao SubcategoryPersisten;	
 	
-	@Autowired
-	SubCategoriaDao subcategorya;
-	
-	@Autowired	
-	SubCategoriaDao   subcategory;  
-	
-	
+
+
+	/*
 	
 	public void insertarsubCategory(Subcategoria subcategory){
 		
@@ -33,7 +31,7 @@ public class SubCategoriaManagerImpl implements SubCategoriaManager {
 		return subcategory.listaSubCategoriaDao();
 		
 	}
-	
+	*/
 	
 	
 }

@@ -1,12 +1,10 @@
 package com.compraventa.dao;
 
-import java.util.List;
-
 import com.compraventa.entidades.Seccion;
 
-public interface SeccionDao {
+public interface SeccionDao extends GenericDao<Seccion, Integer> {
 
-	public List<Seccion> listaSeccion();
+	/*public List<Seccion> listaSeccion();
 	
 	public void insertaSeccionDao(Seccion seccion);
 
@@ -16,5 +14,5 @@ public interface SeccionDao {
 
 	public void borrarSeccion(Integer idseccion);
 
-	public void actualizaSeccion(Integer idseccion, Seccion seccion);
+	public void actualizaSeccion(Integer idseccion, Seccion seccion);*/
 }

@@ -47,7 +47,7 @@ public class SeccionController {
 	@RequestMapping(value="/listSection", method=RequestMethod.GET)
 	public String listadoSection(Model model){
 		
-		List<Seccion> listado = secman.listaSeccion();		
+		List<Seccion> listado = secman.getAll();		
 		model.addAttribute("listSection", listado);
 		
 		return "Seccion/ListadoSeccion";
@@ -72,7 +72,7 @@ public class SeccionController {
 			return  "Seccion/actualizaSeccion";			
 		}		
 		
-		secman.insertaSeccion(seccion);
+		secman.persist(seccion);
 		//regresa al listado de secciones
 		return "redirect:/listSection";
 	}
@@ -82,7 +82,9 @@ public class SeccionController {
 	@RequestMapping(value="/delete-section-{idseccion}", method=RequestMethod.GET)
 	public String deleteSeccion(@PathVariable("idseccion") Integer idseccion){
 		
-		secman.borrarSeccion(idseccion);
+		Seccion sec = secman.get(idseccion);
+		
+		secman.remove(sec);
 		
 		return "redirect:/listSection";
 	}
@@ -93,7 +95,7 @@ public class SeccionController {
 	@RequestMapping(value="/edit-section-{idseccion}", method=RequestMethod.GET)
 	public String irPagActualizaSecion(@PathVariable("idseccion") Integer idseccion,  Model model){
 		
-		Seccion seccion = secman.cargaSeccionById(idseccion);
+		Seccion seccion = secman.get(idseccion);
 		
 		model.addAttribute("seccion", seccion);
 		model.addAttribute("edit", true);
@@ -108,7 +110,7 @@ public class SeccionController {
 	@RequestMapping(value="/edit-section-{idseccion}", method=RequestMethod.POST)	
 	public String actualizaSeccion(@ModelAttribute("seccion") @Valid Seccion seccion, BindingResult result, @PathVariable("idseccion") Integer idseccion){			
 		
-		secman.actualizaSeccion(idseccion, seccion);		
+		secman.update(seccion);		
 		
 		return "redirect:listSection";
 	}
@@ -150,7 +152,7 @@ public class SeccionController {
 		
 		logger.debug("Provider has received request to get all seccions");	
 		
-		List<Seccion> listaSeccion = secman.cargaSeccionServicio();
+		List<Seccion> listaSeccion = secman.getAll();
 		
 		return listaSeccion;
 		
@@ -162,7 +164,7 @@ public class SeccionController {
 		
 		logger.debug("provider has received request to get one seccions");
 		
-		Seccion seccion = secman.cargaSeccionById(idseccion);
+		Seccion seccion = secman.get(idseccion);
 		
 		return seccion;
 	}

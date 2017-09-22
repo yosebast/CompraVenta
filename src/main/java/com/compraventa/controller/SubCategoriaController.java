@@ -40,7 +40,7 @@ public class SubCategoriaController {
 	@RequestMapping(value="insertaSubCatego", method=RequestMethod.POST)
 	public String insertarSubCategoria(@ModelAttribute("subcategoria") @Validated Subcategoria subcateg, BindingResult result, Model model ){
 		
-		subcat.insertarsubCategory(subcateg);
+		subcat.persist(subcateg);
 		
 		
 		return "Subcategoria/InsertaSubcategoria";
@@ -51,7 +51,7 @@ public class SubCategoriaController {
 	@ModelAttribute("listaCategorias")
 	public List<Categoria> listaCategoria(){
 		
-		return categoriaMan.listaCategorias();
+		return categoriaMan.getAll();
 		
 	}
 
