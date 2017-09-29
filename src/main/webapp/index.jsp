@@ -18,10 +18,10 @@
 		<a href="${messageUrl}">Gestion de productos</a>
 		
 		<c:url value="/showProducts" var="messageUrl" />
-		<a href="${messageUrl}">Gestion de categorias</a>
+		<a href="${messageUrl}">Gestion de categorias</a>-->
 		
-		<c:url value="/showProducts" var="messageUrl" />
-		<a href="${messageUrl}">Gestion de subcategorias</a>-->
+		<c:url value="/listSubCategorias" var="messageUrl" />
+		<a href="${messageUrl}">Gestion de subcategorias</a>
 		
 		<c:url value="/listSection" var="messageUrl" />
 		<a href="${messageUrl}">Gestion de secciones</a>
