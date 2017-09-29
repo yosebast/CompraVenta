@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,16 +28,19 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.compraventa.entidades.Categoria;
 import com.compraventa.entidades.Productos;
 import com.compraventa.entidades.Seccion;
 import com.compraventa.entidades.Subcategoria;
+import com.compraventa.objectMapper.ProductosMap;
 import com.compraventa.service.CategoriaManger;
 import com.compraventa.service.ProductoManager;
 import com.compraventa.service.SeccionManager;
@@ -67,6 +72,11 @@ protected static Logger logger = Logger.getLogger("ProductoController");
 	
 	@Autowired
 	SubCategoriaManager subcat;
+	
+	@Autowired
+	ProductosMap prodMap;
+	
+
 	
 	
 	@RequestMapping(value="insertarProd", method= RequestMethod.POST)
@@ -360,4 +370,137 @@ protected static Logger logger = Logger.getLogger("ProductoController");
 	        outputStream.write(fileBytes);
 	        outputStream.close();
 	    }*/
+    
+    
+    
+  //con los siguientes metodos hacemos el crud para las llamadas   desde el proyecto angular externo por lo que seria mejor devolver la llamada a traves de un 
+  		//ResponseEntityque va a empaquetar la respuesta
+    
+    @RequestMapping(value="/allproductos", method=RequestMethod.GET)
+    public ResponseEntity<List<ProductosMap>> listAllProductos(){
+    	
+    	
+    	List<ProductosMap> listadoProductos = new ArrayList<ProductosMap>(); 	
+    	
+    	List<Productos> productos = producto.getAll();
+    	if(productos.isEmpty() ){
+    		
+    		return new ResponseEntity<List<ProductosMap>>(HttpStatus.NO_CONTENT);
+    	}
+    	
+    	byte[] contents = null;
+		InputStream blobInputStream = null;
+		Blob blob = null;
+		//ResponseEntity<ProductosMap> response = null;
+		//HttpHeaders headers = null;
+		
+		for(Productos product : productos){	
+			
+			
+			blob = product.getUrlFoto1();
+			
+			try {
+				blobInputStream = blob.getBinaryStream();
+				contents = IOUtils.toByteArray(blobInputStream);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			prodMap = new ProductosMap();
+			
+			prodMap.setCategoria(product.getCategoria());
+			prodMap.setEstado(product.getEstado());
+			prodMap.setFechaPublicacion(product.getFechaPublicacion());
+			prodMap.setIdproducto(product.getIdproducto());
+			prodMap.setNomImagen(product.getNomImagen());
+			prodMap.setPrecio(product.getPrecio());
+			prodMap.setSeccion(product.getSeccion());
+			prodMap.setSubcategoria(product.getSubcategoria());
+			prodMap.setTitulo(product.getTitulo());
+			prodMap.setUrlFoto1(contents);
+			prodMap.setVisitas(product.getVisitas());		
+    	
+			listadoProductos.add(prodMap);
+    		
+		}
+		return new ResponseEntity<List<ProductosMap>>(listadoProductos, HttpStatus.OK);
+    }
+    
+    //metodo para obtener un registro
+    @RequestMapping(value="/productos-{idproducto}", method=RequestMethod.GET, headers="Accep=application/xml, application/json, text/planin", produces=MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Productos> getProductosById(@PathVariable("idproducto") Integer idproducto){
+		
+     	   Productos product = null; 
+    	   product = producto.get(idproducto);			
+    	
+    	if( producto == null ){
+    		return new ResponseEntity<Productos>(HttpStatus.NOT_FOUND);
+    	}
+    	HttpHeaders headers = new HttpHeaders();
+    	
+    	return new ResponseEntity<Productos>(product, headers, HttpStatus.OK);   	
+    
+    	
+    }
+    
+    //metodo para actualizar un registro
+    
+    @RequestMapping(value="/productos-{id}", method=RequestMethod.PUT, headers="Accept=application/xml, application/json, text/plain", produces=MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> upDateProducto(@PathVariable("id") Integer idProducto, @RequestBody Productos product){
+		
+    	Productos currentProducto = producto.get(idProducto);
+    	
+    	if(currentProducto == null){
+    		return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);    		
+    	}
+    	
+    	producto.update(product);
+    	HttpHeaders header = new HttpHeaders();
+    	return new ResponseEntity<Void>(header, HttpStatus.OK);  	 	
+    	
+    }
+    
+    
+    //metodo para eliminar un resgistro
+    
+    @RequestMapping(value="/productos-{id}", method=RequestMethod.DELETE, headers="application/xml, application/json, text/plain", produces=MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> deleteProducto(@PathVariable("id") Integer idProducto){
+    	
+    	Productos currentProduct = null;
+    	currentProduct = producto.get(idProducto);
+    	
+    	if( currentProduct == null ){
+    		
+    		return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+    		
+    	}
+    	
+    	producto.remove(currentProduct);
+    	
+    	HttpHeaders header = new HttpHeaders();
+    	return new ResponseEntity<Void>(header, HttpStatus.NO_CONTENT);
+    	
+    }
+    
+    //metodo para crear un producto
+    
+    @RequestMapping(value="/product", method=RequestMethod.POST, headers="application/xml, application/json", produces=MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> cretedProducto(@RequestBody Productos product, UriComponentsBuilder ucBuilder ){
+		
+    	producto.persist(product);
+    	
+    	HttpHeaders headers = new HttpHeaders();
+    	
+    	headers.setLocation(ucBuilder.path("/productos/{id}").buildAndExpand(product.getIdproducto()).toUri());
+    	
+    	
+    	return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
+    	
+    	
+    }
+    
 }

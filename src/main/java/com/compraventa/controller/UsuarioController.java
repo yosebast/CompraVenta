@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.compraventa.entidades.Productos;
+
 import com.compraventa.entidades.Usuarios;
 import com.compraventa.service.UsuarioManager;
 
@@ -164,7 +164,7 @@ public class UsuarioController {
 			return listadoUsuarios;			
 		}
 		
-		/*  el metodo anterios tambien se puede hacer con ResponseEntity   y seri alo correcto
+		/*  el metodo anterios tambien se puede hacer con ResponseEntity   y seria lo correcto
 	
  			@RequestMapping(value = "/user/", method = RequestMethod.GET)
     		public ResponseEntity<List<User>> listAllUsers() {

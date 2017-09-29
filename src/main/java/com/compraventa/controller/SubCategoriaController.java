@@ -10,6 +10,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.compraventa.entidades.Categoria;
 import com.compraventa.entidades.Subcategoria;
@@ -54,5 +55,22 @@ public class SubCategoriaController {
 		return categoriaMan.getAll();
 		
 	}
+	
+	
+	
+	//con los siguientes metododos recuperamos objetos y listado de objetos
+	
+	@RequestMapping(value="/subcategoria", method=RequestMethod.GET, headers="Accept=application/xml, application/json")
+	public @ResponseBody List<Subcategoria> getAllSubcategoria(){	
+		
+		List<Subcategoria> listaSubcategoria = subcat.getAll();
+		return listaSubcategoria;
+		
+		
+		
+		
+	}
+	
+	
 
 }
