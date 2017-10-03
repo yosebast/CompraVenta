@@ -8,9 +8,11 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.compraventa.entidades.Categoria;
 import com.compraventa.entidades.Subcategoria;
@@ -71,6 +73,22 @@ public class SubCategoriaController {
 		
 	}
 	
+	//obtenemos las subcategorias de una categoria
 	
+	@RequestMapping(value="/subcategoria", method=RequestMethod.POST, headers="Accept=application/xml, application/json", produces="application/json")
+	public @ResponseBody List<Subcategoria> getAllSubCategorias(@RequestBody Categoria categoria, UriComponentsBuilder ucBuilder ){
+		
+		
+		List<Subcategoria> listaSubcategoria = subcat.getSubcategoriaByCategoria(categoria);
+		
+		
+		
+		
+		return listaSubcategoria;
+		
+		
+		
+		
+	}
 
 }

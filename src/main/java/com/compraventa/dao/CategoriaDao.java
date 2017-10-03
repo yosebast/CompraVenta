@@ -7,7 +7,8 @@ import com.compraventa.entidades.Seccion;
 	
 public interface CategoriaDao extends GenericDao<Categoria, Integer> {
 
-	List<Categoria> getCategoryBySeccion(Seccion seccion);	
+	List<Categoria> getCategoryBySeccion(Seccion seccion);
+	
 	/*public void insertarCategoria(Categoria categoria);
 	public List<Categoria> listaCategorias();*/
 }

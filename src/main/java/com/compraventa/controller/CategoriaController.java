@@ -68,8 +68,7 @@ public class CategoriaController {
 	}
 	
 	
-	//obtendremos las categorias de una seccion.
-	
+	//obtendremos las categorias de una seccion.	
 	
 	@RequestMapping(value="/categoria", method=RequestMethod.POST, headers="Accept=application/xml, application/json", produces = "application/json")
 	public @ResponseBody List<Categoria> getAllCategoria(@RequestBody Seccion seccion, UriComponentsBuilder ucBuilder){
