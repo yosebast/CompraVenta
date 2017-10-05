@@ -263,6 +263,16 @@ public class UsuarioController {
 	
 		
 		
+		//esta llamada es de prueba para poder llegar a la pagina showMessage.jsp desde el index(este es el metodo antiguo)
+		
+		@RequestMapping(value = "/showProducts", method = RequestMethod.GET)
+			public String muestraEntradaAntigua(Model model) {
+		
+				model.addAttribute("usuario", new Usuarios());
+	
+				return "showMessage";
+			}
+		
 		
 		
 		

@@ -4,20 +4,21 @@ package com.compraventa.controller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -125,7 +126,10 @@ protected static Logger logger = Logger.getLogger("ProductoController");
 
 			String nombre = prod.getSubcategoria().getNomsubcategoria();			
 			
-				System.out.println(nombre);			
+				System.out.println(nombre);
+				
+				System.out.println(prod.getFechaPublicacion());
+				
 
 		}
 
@@ -374,7 +378,7 @@ protected static Logger logger = Logger.getLogger("ProductoController");
     
     
   //con los siguientes metodos hacemos el crud para las llamadas   desde el proyecto angular externo por lo que seria mejor devolver la llamada a traves de un 
-  		//ResponseEntityque va a empaquetar la respuesta
+  		//ResponseEntity que va a empaquetar la respuesta
     
     @RequestMapping(value="/allproductos", method=RequestMethod.GET)
     public ResponseEntity<List<ProductosMap>> listAllProductos(){
@@ -414,7 +418,8 @@ protected static Logger logger = Logger.getLogger("ProductoController");
 			
 			prodMap.setCategoria(product.getCategoria());
 			prodMap.setEstado(product.getEstado());
-			prodMap.setFechaPublicacion(product.getFechaPublicacion());
+			prodMap.setFechaPublicacion(new SimpleDateFormat("dd/MM/yyyy").format(product.getFechaPublicacion()));			
+			System.out.println(product.getFechaPublicacion());
 			prodMap.setIdproducto(product.getIdproducto());
 			prodMap.setNomImagen(product.getNomImagen());
 			prodMap.setPrecio(product.getPrecio());
@@ -431,7 +436,7 @@ protected static Logger logger = Logger.getLogger("ProductoController");
     }
     
     //metodo para obtener un registro
-    @RequestMapping(value="/productos-{idproducto}", method=RequestMethod.GET, headers="Accep=application/xml, application/json, text/planin", produces=MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value="/allproductos-{idproducto}", method=RequestMethod.GET, headers="Accep=application/xml, application/json, text/planin", produces=MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Productos> getProductosById(@PathVariable("idproducto") Integer idproducto){
 		
      	   Productos product = null; 
@@ -449,7 +454,7 @@ protected static Logger logger = Logger.getLogger("ProductoController");
     
     //metodo para actualizar un registro
     
-    @RequestMapping(value="/productos-{id}", method=RequestMethod.PUT, headers="Accept=application/xml, application/json, text/plain", produces=MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value="/allproductos-{id}", method=RequestMethod.PUT, headers="Accept=application/xml, application/json, text/plain", produces=MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> upDateProducto(@PathVariable("id") Integer idProducto, @RequestBody Productos product){
 		
     	Productos currentProducto = producto.get(idProducto);
@@ -467,7 +472,7 @@ protected static Logger logger = Logger.getLogger("ProductoController");
     
     //metodo para eliminar un resgistro
     
-    @RequestMapping(value="/productos-{id}", method=RequestMethod.DELETE, headers="application/xml, application/json, text/plain", produces=MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value="/allproductos-{id}", method=RequestMethod.DELETE, headers="application/xml, application/json, text/plain", produces=MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> deleteProducto(@PathVariable("id") Integer idProducto){
     	
     	Productos currentProduct = null;
@@ -488,14 +493,24 @@ protected static Logger logger = Logger.getLogger("ProductoController");
     
     //metodo para crear un producto
     
-    @RequestMapping(value="/product", method=RequestMethod.POST, headers="application/xml, application/json", produces=MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> cretedProducto(@RequestBody Productos product, UriComponentsBuilder ucBuilder ){
-		
-    	producto.persist(product);
+    @RequestMapping(value="/product", method=RequestMethod.POST, headers="Accept=application/xml, application/json, image/jpg", produces = "application/json")
+    public ResponseEntity<Void> createdProducto( @RequestParam(value="fichero", required=false) MultipartFile file,
+            @RequestParam(value="data") Object data) throws Exception {
+    	
+    	
+    	
+    
+    		 byte[] Json = file.getBytes();
+			FileOutputStream fileOuputStream = new FileOutputStream("C:\\Clienteservidor2.jpg");
+			fileOuputStream.write(Json);
+			fileOuputStream.close();
+	
+    	
+    	//producto.persist(product);
     	
     	HttpHeaders headers = new HttpHeaders();
     	
-    	headers.setLocation(ucBuilder.path("/productos/{id}").buildAndExpand(product.getIdproducto()).toUri());
+    	//headers.setLocation(ucBuilder.path("/productos/{id}").buildAndExpand(product.getIdproducto()).toUri());
     	
     	
     	return new ResponseEntity<Void>(headers, HttpStatus.CREATED);

@@ -30,7 +30,7 @@ public class ProductosMap implements IProductosMap  {
 	private Double precio;
 	
 
-	private Date fechaPublicacion;
+	private String fechaPublicacion;
 	
 
 	private String estado;
@@ -100,11 +100,11 @@ public class ProductosMap implements IProductosMap  {
 		this.precio = precio;
 	}
 
-	public Date getFechaPublicacion() {
+	public String getFechaPublicacion() {
 		return this.fechaPublicacion;
 	}
 
-	public void setFechaPublicacion(Date fechaPublicacion) {
+	public void setFechaPublicacion(String fechaPublicacion) {
 		this.fechaPublicacion = fechaPublicacion;
 	}
 
