@@ -13,7 +13,7 @@ import com.compraventa.entidades.*;
 public class ProductosMap implements IProductosMap  {
 
 
-	private int idproducto;
+	private Integer idproducto;
 
 	private Seccion seccion;
 	
