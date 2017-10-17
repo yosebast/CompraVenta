@@ -9,15 +9,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialException;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -35,6 +39,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.compraventa.entidades.Categoria;
@@ -47,13 +52,14 @@ import com.compraventa.service.ProductoManager;
 import com.compraventa.service.SeccionManager;
 import com.compraventa.service.SubCategoriaManager;
 import com.compraventa.service.UsuarioManager;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 
 @Controller
 public class ProductoController {
 
-protected static Logger logger = Logger.getLogger("ProductoController");
+private static Logger logger = LoggerFactory.getLogger("ProductoController");
 	
 
 	@Autowired
@@ -118,6 +124,8 @@ protected static Logger logger = Logger.getLogger("ProductoController");
 	@RequestMapping(value = "cargaProductos", method = RequestMethod.GET)
 	public String loadProductos(Model model) {
 
+		logger.debug("carga los products");
+		
 		List<Productos> listaProduct = producto.getAll();
 
 		model.addAttribute("listaProductos", listaProduct);
@@ -126,9 +134,9 @@ protected static Logger logger = Logger.getLogger("ProductoController");
 
 			String nombre = prod.getSubcategoria().getNomsubcategoria();			
 			
-				System.out.println(nombre);
+				//System.out.println(nombre);
 				
-				System.out.println(prod.getFechaPublicacion());
+				//System.out.println(prod.getFechaPublicacion());
 				
 
 		}
@@ -419,7 +427,7 @@ protected static Logger logger = Logger.getLogger("ProductoController");
 			prodMap.setCategoria(product.getCategoria());
 			prodMap.setEstado(product.getEstado());
 			prodMap.setFechaPublicacion(new SimpleDateFormat("dd/MM/yyyy").format(product.getFechaPublicacion()));			
-			System.out.println(product.getFechaPublicacion());
+			//System.out.println(product.getFechaPublicacion());
 			prodMap.setIdproducto(product.getIdproducto());
 			prodMap.setNomImagen(product.getNomImagen());
 			prodMap.setPrecio(product.getPrecio());
@@ -435,48 +443,94 @@ protected static Logger logger = Logger.getLogger("ProductoController");
 		return new ResponseEntity<List<ProductosMap>>(listadoProductos, HttpStatus.OK);
     }
     
-    //metodo para obtener un registro
-    @RequestMapping(value="/allproductos-{idproducto}", method=RequestMethod.GET, headers="Accep=application/xml, application/json, text/planin", produces=MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Productos> getProductosById(@PathVariable("idproducto") Integer idproducto){
-		
+    //metodo para obtener un registro	se enviara el objeto como se envio para el listado no puede ir el objeto por el tipo de dato Blob   entonces lo cambio a byte  y asi lo envio	
+    	@RequestMapping(value="/allproductos-{id}", method=RequestMethod.GET, headers = "Accept=application/xml, application/json, text/plain", produces=MediaType.APPLICATION_JSON_VALUE)
+		public  ResponseEntity<ProductosMap> getProductosById(@PathVariable("id") Integer idproducto){
      	   Productos product = null; 
     	   product = producto.get(idproducto);			
     	
     	if( producto == null ){
-    		return new ResponseEntity<Productos>(HttpStatus.NOT_FOUND);
+    		return new ResponseEntity<ProductosMap>(HttpStatus.NOT_FOUND);
     	}
+    	
+    	byte[] contents = null;
+		InputStream blobInputStream = null;
+		Blob blob = null;
+		
+		blob = product.getUrlFoto1();
+		
+		try {
+			blobInputStream = blob.getBinaryStream();
+			contents = IOUtils.toByteArray(blobInputStream);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		prodMap = new ProductosMap();
+		
+		prodMap.setCategoria(product.getCategoria());
+		prodMap.setEstado(product.getEstado());
+		prodMap.setFechaPublicacion(new SimpleDateFormat("dd/MM/yyyy").format(product.getFechaPublicacion()));			
+		//System.out.println(product.getFechaPublicacion());
+		prodMap.setIdproducto(product.getIdproducto());
+		prodMap.setNomImagen(product.getNomImagen());
+		prodMap.setPrecio(product.getPrecio());
+		prodMap.setSeccion(product.getSeccion());
+		prodMap.setSubcategoria(product.getSubcategoria());
+		prodMap.setTitulo(product.getTitulo());
+		prodMap.setUrlFoto1(contents);
+		prodMap.setVisitas(product.getVisitas());	
+		
     	HttpHeaders headers = new HttpHeaders();
     	
-    	return new ResponseEntity<Productos>(product, headers, HttpStatus.OK);   	
+    	return new ResponseEntity<ProductosMap>(prodMap, headers, HttpStatus.OK);   	
     
     	
     }
     
-    //metodo para actualizar un registro
-    
-    @RequestMapping(value="/allproductos-{id}", method=RequestMethod.PUT, headers="Accept=application/xml, application/json, text/plain", produces=MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> upDateProducto(@PathVariable("id") Integer idProducto, @RequestBody Productos product){
+    //metodo para actualizar un registro 
+    	
+    	@RequestMapping(value="/allproductos-{id}", method=RequestMethod.PUT, headers="Accept=application/xml, application/json, text/plain", produces=MediaType.APPLICATION_JSON_VALUE)
+        public ResponseEntity<Void> upDateProducto(@PathVariable("id") Integer idProducto, @RequestBody ProductosMap ObjProductosMap) throws ParseException, SerialException, SQLException{
 		
-    	Productos currentProducto = producto.get(idProducto);
     	
-    	if(currentProducto == null){
-    		return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);    		
-    	}
+    		//lo he mapeado con ProductoMap   por que si lo mapeo con la entidad producto peta    por que no puede mapear la fecha con del json tipo string   con la de la entidad tipo date. y tampoco puede mapear de byte a blob  asi que aqui ya no es necesario el mapper
+    		//hay que revisar el resto por si derrepente tampoco es necesario hacer un mapper  y directamente lo mapeamos a ProductosMap
+    		
+              
+        	
+        	//3.- construyo el objeto Productos
+        	
+        	Productos ObjProducto = new Productos();
+        	ObjProducto.setIdproducto(ObjProductosMap.getIdproducto());
+        	ObjProducto.setSeccion(ObjProductosMap.getSeccion());
+        	ObjProducto.setCategoria(ObjProductosMap.getCategoria());
+        	ObjProducto.setSubcategoria(ObjProductosMap.getSubcategoria());
+        	ObjProducto.setTitulo(ObjProductosMap.getTitulo());
+        	ObjProducto.setPrecio(ObjProductosMap.getPrecio());
+        	ObjProducto.setFechaPublicacion(new SimpleDateFormat("dd/MM/yyyy").parse(ObjProductosMap.getFechaPublicacion()));
+        	ObjProducto.setEstado(ObjProductosMap.getEstado());
+        	ObjProducto.setVisitas(ObjProductosMap.getVisitas());
+        	ObjProducto.setNomImagen(ObjProductosMap.getNomImagen());
+        	ObjProducto.setUrlFoto1(new SerialBlob(ObjProductosMap.getUrlFoto1()));
     	
-    	producto.update(product);
+    	producto.update(ObjProducto);
     	HttpHeaders header = new HttpHeaders();
     	return new ResponseEntity<Void>(header, HttpStatus.OK);  	 	
     	
     }
     
     
-    //metodo para eliminar un resgistro
-    
-    @RequestMapping(value="/allproductos-{id}", method=RequestMethod.DELETE, headers="application/xml, application/json, text/plain", produces=MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> deleteProducto(@PathVariable("id") Integer idProducto){
+    //metodo para eliminar un resgistro 
     	
+    	@RequestMapping(value="/allproductos-{id}", method=RequestMethod.DELETE, headers = "Accept=application/xml, application/json, text/plain", produces=MediaType.APPLICATION_JSON_VALUE)
+		public ResponseEntity<Void> deleteProducto(@PathVariable("id") Integer idproducto){
     	Productos currentProduct = null;
-    	currentProduct = producto.get(idProducto);
+    	currentProduct = producto.get(idproducto);
     	
     	if( currentProduct == null ){
     		
@@ -497,16 +551,42 @@ protected static Logger logger = Logger.getLogger("ProductoController");
     public ResponseEntity<Void> createdProducto( @RequestParam(value="fichero", required=false) MultipartFile file,
             @RequestParam(value="data") Object data) throws Exception {
     	
+    	 SimpleDateFormat formatt = new SimpleDateFormat("dd-MMM-yyyy");  	
+    	//usamos una la clase ProductosMap   por que si usamos la entidad Productos   el  mappear no puede mapear el tipo de dato  de string a date y lanza error   asi que lo mapeamos a este objeto y luego lo pasamos a la entidad
+    	//pero todo esto lo hacemos aqui en el controller y no en el servicio por que al estar usando un generic  lo llamamos desde aqui y no desde el servicio.
+    	
+    	//1.- creo el objeto mapper
+    	ObjectMapper mapper = new ObjectMapper();
+    	
+    	//2.- mapeo el json que recibo al objeto ProductosMap
+    	ProductosMap ObjProductosMap = mapper.readValue(data.toString(), ProductosMap.class);
+    	
+    	ObjProductosMap.setUrlFoto1(file.getBytes());
+    	
+    	//3.- construyo el objeto Productos
+    	
+    	Productos ObjProducto = new Productos();
+    	
+    	ObjProducto.setSeccion(ObjProductosMap.getSeccion());
+    	ObjProducto.setCategoria(ObjProductosMap.getCategoria());
+    	ObjProducto.setSubcategoria(ObjProductosMap.getSubcategoria());
+    	ObjProducto.setTitulo(ObjProductosMap.getTitulo());
+    	ObjProducto.setPrecio(ObjProductosMap.getPrecio());
+    	ObjProducto.setFechaPublicacion(new SimpleDateFormat("dd/MM/yyyy").parse(ObjProductosMap.getFechaPublicacion()));
+    	ObjProducto.setEstado(ObjProductosMap.getEstado());
+    	ObjProducto.setVisitas(ObjProductosMap.getVisitas());
+    	ObjProducto.setNomImagen(ObjProductosMap.getNomImagen());
+    	ObjProducto.setUrlFoto1(new SerialBlob(ObjProductosMap.getUrlFoto1()));
     	
     	
-    
+    /*con este trozo de codigo los byte[]  conviero en imagen el el fichero
     		 byte[] Json = file.getBytes();
 			FileOutputStream fileOuputStream = new FileOutputStream("C:\\Clienteservidor2.jpg");
 			fileOuputStream.write(Json);
 			fileOuputStream.close();
-	
+	*/
     	
-    	//producto.persist(product);
+    	producto.persist(ObjProducto);
     	
     	HttpHeaders headers = new HttpHeaders();
     	
