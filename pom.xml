@@ -14,6 +14,8 @@
 
         <!-- Spring -->
         <spring-framework.version>4.0.3.RELEASE</spring-framework.version>
+        
+        <spring.ws.version>2.1.2.RELEASE</spring.ws.version>
 
         <!-- Hibernate / JPA -->
         <!-- <hibernate.version>4.3.5.Final</hibernate.version> -->
@@ -21,8 +23,12 @@
         <!-- Logging -->
         <logback.version>1.0.13</logback.version>
         <slf4j.version>1.7.5</slf4j.version>
+        <!-- Test-->
+		<junit.version>4.11</junit.version>
 
     </properties>
+
+
 
     <dependencies>
 
@@ -68,13 +74,34 @@
             <version>${spring-framework.version}</version>
         </dependency>
 
-        <!-- Logging with SLF4J & LogBack -->
+        <!-- Logging with SLF4J & LogBack  estos son para el fichero log -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
             <scope>compile</scope>
         </dependency>
+        
+        <dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+			<scope>runtime</scope>
+		</dependency>	
+		
+		 <!-- Logging with SLF4J & LogBack  estos son para el fichero log -->
+		 
+		 
+		 
+		 <!-- libreria necesaria para la gestion de los ws -->
+	
+		<dependency>
+    <groupId>org.apache.ws.xmlschema</groupId>
+    <artifactId>xmlschema-core</artifactId>
+    <version>2.0.2</version>
+</dependency>
+		
+		 
         <!-- Hibernate -->
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -116,6 +143,18 @@
         </dependency>
         
       <!--no poner la dependencia de aop   por que el proyecto se rompe  mas especifico se rompre el tomcat-->  
+      
+      	<!--   permite la gestión de documento XML desde/hacia un objeto, brinda una abstracción de trabajo -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-oxm</artifactId>
+			<version>${spring-framework.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.ws</groupId>
+			<artifactId>spring-ws-core</artifactId>
+			<version>${spring.ws.version}</version>
+		</dependency>
      
   
         
@@ -149,7 +188,26 @@
             <artifactId>jstl</artifactId>
             <version>1.2</version>
         </dependency>
-        		
+        
+        <!-- jaxb -->
+		<dependency>
+		<groupId>javax.xml.bind</groupId>
+		<artifactId>jaxb-api</artifactId>
+		<version>2.2.12</version>
+	</dependency>  
+	
+	 <dependency>
+            <groupId>javax.xml.ws</groupId>
+            <artifactId>jaxws-api</artifactId>
+            <version>2.2.11</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.ws</groupId>
+            <artifactId>jaxws-rt</artifactId>
+            <version>2.1.3</version>
+        </dependency>
+        
+              		
 
 		<dependency>
 		<groupId>org.hibernate</groupId>
@@ -188,8 +246,75 @@ BBDD   es necesario estos dos   jar   junto al bean resolver multipart  de sprin
 			<scope>test</scope>
 		</dependency>
 	
-		
-		
-
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+			<exclusions>
+        <exclusion>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
+        </exclusion>
+    </exclusions>
+		</dependency>
+		<dependency>
+    <groupId>org.hamcrest</groupId>
+    <artifactId>hamcrest-library</artifactId>
+    <version>1.3</version>
+    <scope>test</scope>
+</dependency>
 	</dependencies>	
+	
+	<!--  esto es para el junit -->
+	
+	<build>
+ <!-- <plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jaxb2-maven-plugin</artifactId>
+				<version>1.4</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>xjc</goal>
+						</goals>
+						<phase>generate-sources</phase>
+					</execution>
+				</executions>
+				<configuration>
+					<clearOutputDir>false</clearOutputDir>
+					<outputDirectory>src/main/java</outputDirectory>
+					<schemaDirectory>src/main/resources/schemas</schemaDirectory>
+					<includeSchema>**/*.xsd</includeSchema>
+					<bindingDirectory>src/main/resources/bindings</bindingDirectory>
+					<enableIntrospection>false</enableIntrospection>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<warName>${context.path}</warName>
+				</configuration>
+			</plugin>
+		</plugins>-->
+
+    <resources>
+        <resource>
+            <directory>${project.basedir}/src/main/resources</directory>
+            <filtering>true</filtering>
+        </resource>
+    </resources>
+    <testResources>
+        <testResource>
+            <directory>${project.basedir}/src/main/resources</directory>
+            <filtering>true</filtering>
+        </testResource>
+        <testResource>
+            <directory>${project.basedir}/src/test/java/resources</directory>
+            <filtering>true</filtering>
+        </testResource>
+    </testResources>
+</build>
 </project>
