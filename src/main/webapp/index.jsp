@@ -24,6 +24,9 @@
 		<a href="${messageUrl}">Gestion de subcategorias</a>
 		
 		<c:url value="/listSection" var="messageUrl" />
-		<a href="${messageUrl}">Gestion de secciones</a>
+		<a href="${messageUrl}">Gestion de secciones</a>	
+		
+		<c:url value="/showProducts" var="messageUrl" />	
+		<a href="${messageUrl}" >Click to see products</a>
 	</body>
 </html>
