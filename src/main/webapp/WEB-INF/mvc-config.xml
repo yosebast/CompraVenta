@@ -3,17 +3,19 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:sws="http://www.springframework.org/schema/web-services"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd 
-		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/web-services http://www.springframework.org/schema/web-services/web-services.xsd">
 
     <!-- Uncomment and your base-package here:-->
     
   	<context:component-scan base-package="com.compraventa" />
 	<!-- esta anotacion es para trabajar con las transacciones anotadas con spring -->
 	<tx:annotation-driven transaction-manager="transactionManager"/>
-	
+	 <!--<sws:annotation-driven />-->
 	 <mvc:annotation-driven />
     
 	<bean id="transactionManager"
@@ -92,5 +94,25 @@
 		<!-- one of the properties available; the maximum file size in bytes -->
 		<property name="maxUploadSize" value="10000000" />
 	</bean>
+	
+	
+	
+	
+	
+	<!-- <bean id="UsuarioDetailsService" class="org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition" lazy-init="true">
+        <property name="schemaCollection">
+            <bean class="org.springframework.xml.xsd.commons.CommonsXsdSchemaCollection">
+                <property name="inline" value="true" />
+                <property name="xsds">
+                    <list>
+                        <value>schemas/GestionUsuariosService_schema1.xsd</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="portTypeName" value="UsuarioDetailsService"/>
+        <property name="serviceName" value="UsuarioDetailsServices" />
+        <property name="locationUri" value="/endpoints" />
+    </bean>-->
 	
 </beans>
