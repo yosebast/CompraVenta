@@ -11,7 +11,7 @@ import com.compraventa.dao.GenericDao;
 
 import java.util.List;
 
-@Service
+//@Service aqui no es necesario definirle un @service por que es una case abstracta
 public abstract class GenericServiceImpl<E, K> implements GenericService<E, K> {
 
 	@Autowired
